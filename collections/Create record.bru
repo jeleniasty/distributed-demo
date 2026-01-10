@@ -1,0 +1,22 @@
+meta {
+  name: Create record
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/records
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "description": "Testowy rekord 5"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
