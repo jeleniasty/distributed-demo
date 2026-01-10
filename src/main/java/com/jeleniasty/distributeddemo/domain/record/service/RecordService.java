@@ -6,22 +6,27 @@ import com.jeleniasty.distributeddemo.domain.record.dto.RecordDto;
 import com.jeleniasty.distributeddemo.domain.record.entity.Record;
 import com.jeleniasty.distributeddemo.domain.record.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RecordService {
 
     private final RecordRepository recordRepository;
 
     @Transactional
     public void createRecord(CreateRecordDto dto) {
-        recordRepository.save(new Record(dto.description()));
+        log.info("Creating new record with data: {}", dto);
+        var record = recordRepository.save(new Record(dto.description()));
+        log.info("Record [id: {}] has been created", record.getId());
     }
 
     @Transactional(readOnly = true)
     public RecordDto getRecord(Long id) {
+        log.info("Getting record with id: {}", id);
         return recordRepository.findById(id)
                 .map(record -> new RecordDto(
                         record.getId(),
