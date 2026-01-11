@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RecordException.class)
     public ProblemDetail handleRecordException(RecordException exception) {
-        log.error("RecordException has been throw. Returning 400 http status with message: {}", exception.getMessage());
+        log.error("RecordException has been thrown. Returning 400 http status with message: {}", exception.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
