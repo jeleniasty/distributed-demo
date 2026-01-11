@@ -1,5 +1,6 @@
 package com.jeleniasty.distributeddemo.domain.record.service;
 
+import com.jeleniasty.distributeddemo.domain.record.dto.RecordDetailsDto;
 import com.jeleniasty.distributeddemo.domain.record.exception.RecordException;
 import com.jeleniasty.distributeddemo.domain.record.dto.CreateRecordDto;
 import com.jeleniasty.distributeddemo.domain.record.dto.RecordDto;
@@ -27,12 +28,14 @@ public class RecordService {
     }
 
     @Transactional(readOnly = true)
-    public RecordDto getRecord(Long id) {
+    public RecordDetailsDto getRecord(Long id) {
         log.info("Getting record with id: {}", id);
         return recordRepository.findById(id)
-                .map(record -> new RecordDto(
+                .map(record -> new RecordDetailsDto(
                         record.getId(),
-                        record.getDescription()))
+                        record.getDescription(),
+                        record.getCreatedAt(),
+                        record.getCreatedBy()))
                 .orElseThrow(() -> RecordException.notFound(id));
     }
 
