@@ -68,7 +68,7 @@ export class RecordListComponent implements OnInit{
           this.selectedRecord = fullRecord;
           this.cdr.detectChanges();
         },
-        error: (err) => {
+        error: () => {
           this.loadingDetails = false;
           this.cdr.detectChanges();
         }

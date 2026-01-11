@@ -4,7 +4,6 @@ import com.jeleniasty.distributeddemo.domain.record.dto.CreateRecordDto;
 import com.jeleniasty.distributeddemo.domain.record.dto.RecordDetailsDto;
 import com.jeleniasty.distributeddemo.domain.record.dto.RecordDto;
 import com.jeleniasty.distributeddemo.domain.record.service.RecordService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
