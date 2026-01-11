@@ -1,0 +1,12 @@
+.add-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+input {
+  flex-grow: 1;
+  background: transparent !important;
+}

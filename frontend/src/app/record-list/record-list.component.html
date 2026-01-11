@@ -1,0 +1,43 @@
+<div class="scroll-container" (scroll)="onScroll($event)">
+  <ul class="record-list">
+    @for (record of records; track record.id) {
+      <li class="record-item" (click)="showDetails(record)">
+        <span class="record-id">#{{ record.id }}</span>
+        <span class="record-desc">{{ record.description }}</span>
+      </li>
+    } @empty {
+      @if (!loading) {
+        <li class="empty-state">No data streams found.</li>
+      }
+    }
+  </ul>
+
+  @if(loading) {
+    <div class="loading-spinner">
+      <div class="pulse"></div>
+      Loading...
+    </div>
+  }
+</div>
+
+@if (loadingDetails) {
+  <div class="loader-overlay">
+    <div class="loader-container">
+      <div class="pulse-dot"></div>
+      <span>Loading...</span>
+    </div>
+  </div>
+} @else if (selectedRecord) {
+  <div class="modal-backdrop" (click)="closeDetails()">
+    <div class="popup" (click)="$event.stopPropagation()">
+      <h3>RECORD {{ selectedRecord.id }}</h3>
+      <div class="details-content">
+        <p><span class="label">ID:</span> {{ selectedRecord.id }}</p>
+        <p><span class="label">DESCRIPTION:</span> {{ selectedRecord.description }}</p>
+        <p><span class="label">CREATED AT:</span> {{ selectedRecord.createdAt | date:'medium' }}</p>
+        <p><span class="label">CREATED BY:</span> {{ selectedRecord.createdBy }}</p>
+      </div>
+      <button class="btn-primary" (click)="closeDetails()">Return</button>
+    </div>
+  </div>
+}
