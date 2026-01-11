@@ -7,6 +7,8 @@ import com.jeleniasty.distributeddemo.domain.record.entity.Record;
 import com.jeleniasty.distributeddemo.domain.record.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,5 +34,16 @@ public class RecordService {
                         record.getId(),
                         record.getDescription()))
                 .orElseThrow(() -> RecordException.notFound(id));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RecordDto> getRecords(Pageable pageable) {
+        log.info("Getting records... [page {}, size {}]", pageable.getPageNumber(), pageable.getPageSize());
+        return recordRepository
+                .findAll(pageable)
+                .map(record -> new RecordDto(
+                        record.getId(),
+                        record.getDescription())
+                );
     }
 }
