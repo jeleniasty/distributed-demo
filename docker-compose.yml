@@ -2,7 +2,6 @@ version: "3.9"
 services:
   db:
     image: postgres:16
-    container_name: postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -12,43 +11,30 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  backend-1:
+  backend:
     build: .
     depends_on:
       - db
+      - redis
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/distributed-demo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/distributed-demo
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_CACHE_TYPE: redis
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    expose:
+      - "8080"
+
+  redis:
+    image: redis:8.4-alpine
     ports:
-      - "8080"
-  backend-2:
-    build: .
-    depends_on:
-      - db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/distributed-demo
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
-    expose:
-      - "8080"
-  backend-3:
-    build: .
-    depends_on:
-      - db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/distributed-demo
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
-    expose:
-      - "8080"
+      - "6379:6379"
 
   nginx:
     image: nginx:1.29-alpine
     depends_on:
-      - backend-1
-      - backend-2
-      - backend-3
+      - backend
     ports:
       - "8080:8080"
     volumes:
