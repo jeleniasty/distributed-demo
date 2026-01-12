@@ -29,7 +29,7 @@ public class RecordController {
     }
 
     @GetMapping(value = "/{id}")
-    public RecordDetailsDto getRecord(@PathVariable Long id) {
+    public RecordDetailsDto getRecord(@PathVariable Long id) throws InterruptedException {
         Thread.sleep(2000);
         return recordService.getRecord(id);
     }
