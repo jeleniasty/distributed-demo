@@ -30,6 +30,7 @@ public class RecordController {
 
     @GetMapping(value = "/{id}")
     public RecordDetailsDto getRecord(@PathVariable Long id) {
+        Thread.sleep(2000);
         return recordService.getRecord(id);
     }
 
