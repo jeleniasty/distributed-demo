@@ -1,17 +1,19 @@
 meta {
-  name: Get record by id
+  name: Get records page
   type: http
-  seq: 2
+  seq: 4
 }
 
 get {
-  url: http://localhost:8080/api/records/:id
+  url: http://localhost:8080/api/records?page=0&size=10&sort=desc
   body: none
   auth: bearer
 }
 
-params:path {
-  id: 1
+params:query {
+  page: 0
+  size: 10
+  sort: desc
 }
 
 auth:bearer {
