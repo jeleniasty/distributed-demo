@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleInternalServerError(Exception exception) {
         var errorUUID = UUID.randomUUID().toString();
-        log.error("Exception [id: {}]. Message: {}. \n StackTrace: {}" , errorUUID, exception.getMessage(), exception.getStackTrace());
+        log.error("Exception [id: {}]: " , errorUUID, exception);
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, errorUUID);
     }
 }

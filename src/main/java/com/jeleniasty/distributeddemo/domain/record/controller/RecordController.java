@@ -4,8 +4,8 @@ import com.jeleniasty.distributeddemo.domain.record.dto.CreateRecordDto;
 import com.jeleniasty.distributeddemo.domain.record.dto.RecordDetailsDto;
 import com.jeleniasty.distributeddemo.domain.record.dto.RecordDto;
 import com.jeleniasty.distributeddemo.domain.record.service.RecordService;
+import com.jeleniasty.distributeddemo.shared.model.PagedResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +34,7 @@ public class RecordController {
     }
 
     @GetMapping
-    public Page<RecordDto> getRecords(Pageable pageable) {
+    public PagedResponse<RecordDto> getRecords(Pageable pageable) {
         return recordService.getRecords(pageable);
     }
 }

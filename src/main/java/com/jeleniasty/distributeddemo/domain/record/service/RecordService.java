@@ -1,11 +1,12 @@
 package com.jeleniasty.distributeddemo.domain.record.service;
 
-import com.jeleniasty.distributeddemo.domain.record.dto.RecordDetailsDto;
-import com.jeleniasty.distributeddemo.domain.record.exception.RecordException;
 import com.jeleniasty.distributeddemo.domain.record.dto.CreateRecordDto;
+import com.jeleniasty.distributeddemo.domain.record.dto.RecordDetailsDto;
 import com.jeleniasty.distributeddemo.domain.record.dto.RecordDto;
 import com.jeleniasty.distributeddemo.domain.record.entity.Record;
+import com.jeleniasty.distributeddemo.domain.record.exception.RecordException;
 import com.jeleniasty.distributeddemo.domain.record.repository.RecordRepository;
+import com.jeleniasty.distributeddemo.shared.model.PagedResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +36,7 @@ public class RecordService {
         log.info("Record [id: {}] has been created", record.getId());
     }
 
-    @Cacheable(
-            value = "records",
-            key = "#id"
-    )
+    @Cacheable(value = "records", key = "#id")
     @Transactional(readOnly = true)
     public RecordDetailsDto getRecord(Long id) {
         log.info("Getting record with id: {}", id);
@@ -49,18 +49,27 @@ public class RecordService {
                 .orElseThrow(() -> RecordException.notFound(id));
     }
 
-    @Cacheable(
-            value = "record-pages",
-            key = "'page=' + #pageable.pageNumber + ',size=' + #pageable.pageSize"
-    )
+    @Cacheable(value = "record-pages", key = "#root.target.getRecordsCacheKey(#pageable)")
     @Transactional(readOnly = true)
-    public Page<RecordDto> getRecords(Pageable pageable) {
-        log.info("Getting records... [page {}, size {}]", pageable.getPageNumber(), pageable.getPageSize());
-        return recordRepository
-                .findAll(pageable)
-                .map(record -> new RecordDto(
+    public PagedResponse<RecordDto> getRecords(Pageable pageable) {
+        log.info("Getting records... [{}]", getRecordsCacheKey(pageable));
+        Page<Record> page = recordRepository.findAll(pageable);
+        return new PagedResponse<>(
+                page.getContent().stream().map(record -> new RecordDto(
                         record.getId(),
                         record.getDescription())
-                );
+                ).toList(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.getSize()
+        );
+    }
+
+    public String getRecordsCacheKey(Pageable pageable) {
+        return "page=" + pageable.getPageNumber() +
+                ",size=" + pageable.getPageSize() +
+                ",sort=" + pageable.getSort().stream()
+                .map(s -> s.getProperty() + "-" + s.getDirection())
+                .collect(Collectors.joining(","));
     }
 }
