@@ -55,6 +55,11 @@ body {
   }
 }
 
+input {
+  flex-grow: 1;
+  background: transparent !important;
+}
+
 @keyframes pulse-glow {
   from { box-shadow: 0 0 2px var(--primary); opacity: 0.5; }
   to { box-shadow: 0 0 12px var(--primary); opacity: 1; }
