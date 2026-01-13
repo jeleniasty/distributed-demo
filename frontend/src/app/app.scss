@@ -1,0 +1,14 @@
+.app-container {
+  width: 40%;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
