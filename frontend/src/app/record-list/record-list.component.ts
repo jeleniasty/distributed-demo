@@ -42,6 +42,7 @@ export class RecordListComponent implements OnInit{
     this.recordService.getRecords(this.page, this.size).subscribe({
       next: (data) => {
         if (data.length === 0) this.allLoaded = true;
+        this.records.push(...data); this.cdr.detectChanges();
         this.page++;
       },
       complete: () => (this.loading = false),

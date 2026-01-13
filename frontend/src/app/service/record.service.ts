@@ -3,12 +3,13 @@ import {BehaviorSubject, map, Observable, tap} from 'rxjs';
 import {RecordModel} from '../model/record.model';
 import {HttpClient} from '@angular/common/http';
 import {RecordDetailsModel} from '../model/record-details.model';
+import {environment} from '../../environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RecordService {
-  private API_URL = 'http://localhost:8080/api/records';
+  private API_URL = `${environment.apiUrl}/records`;
 
   private recordsSubject = new BehaviorSubject<RecordModel[]>([]);
   records$ = this.recordsSubject.asObservable();
@@ -20,7 +21,7 @@ export class RecordService {
     return this.http.get<{ content: RecordModel[] }>(
       `${this.API_URL}?page=${page}&size=${size}&sort=id,desc`
     ).pipe(
-      map((resp: any) => resp.content),
+      map((response: any) => response.content),
       tap(records => {
         const current = page === 0 ? [] : this.recordsSubject.value;
         this.recordsSubject.next([...current, ...records]);
