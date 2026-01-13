@@ -1,4 +1,4 @@
-package com.jeleniasty.distributeddemo.exception;
+package com.jeleniasty.distributeddemo.shared.exception.exception;
 
 import com.jeleniasty.distributeddemo.domain.record.exception.RecordException;
 import lombok.extern.slf4j.Slf4j;

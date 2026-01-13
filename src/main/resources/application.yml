@@ -9,3 +9,8 @@ spring:
 app:
   cors:
     allowed-origin: http://localhost:4200
+
+jobs:
+  records-count:
+    interval: 10000
+    topic: /topic/records/count

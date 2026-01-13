@@ -26,7 +26,7 @@ public class RecordService {
     private final RecordRepository recordRepository;
 
     @CacheEvict(
-            value = "record-pages",
+            value = {"record-pages", "record-count"},
             allEntries = true
     )
     @Transactional
@@ -71,5 +71,11 @@ public class RecordService {
                 ",sort=" + pageable.getSort().stream()
                 .map(s -> s.getProperty() + "-" + s.getDirection())
                 .collect(Collectors.joining(","));
+    }
+
+    @Cacheable(value = "record-count")
+    @Transactional(readOnly = true)
+    public Number  getRecordsCount() {
+        return recordRepository.count();
     }
 }
