@@ -24,13 +24,13 @@ public class RecordController {
     private final RecordService recordService;
 
     @PostMapping
-    public void saveRecord(@RequestBody CreateRecordDto dto) {
+    public void saveRecord(@RequestBody CreateRecordDto dto)  throws InterruptedException{
+        Thread.sleep(2000);
         recordService.createRecord(dto);
     }
 
     @GetMapping(value = "/{id}")
-    public RecordDetailsDto getRecord(@PathVariable Long id) throws InterruptedException {
-        Thread.sleep(2000);
+    public RecordDetailsDto getRecord(@PathVariable Long id) {
         return recordService.getRecord(id);
     }
 
