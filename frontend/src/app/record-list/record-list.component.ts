@@ -30,12 +30,26 @@ export class RecordListComponent implements OnInit{
   }
 
   ngOnInit() {
+    this.recordService.refresh$.subscribe(() => {
+      this.reloadList();
+    });
+
+    this.loadRecords();
+  }
+
+  reloadList() {
+    this.records = [];
+    this.page = 0;
+    this.allLoaded = false;
+
     this.loadRecords();
   }
 
   loadRecords() {
     if (this.loading || this.allLoaded) return;
+
     this.loading = true;
+    this.cdr.detectChanges();
 
     this.recordService.getRecords(this.page, this.size).pipe(
       take(1),
@@ -50,7 +64,6 @@ export class RecordListComponent implements OnInit{
         } else {
           this.records.push(...newRecords);
         }
-
         this.page++;
         if (newRecords.length < this.size) {
           this.allLoaded = true;
