@@ -18,20 +18,18 @@ export class RecordListComponent implements OnInit{
   records: RecordModel[] = [];
   selectedRecord: RecordDetailsModel | null = null;
 
-  page = 0;
-  size = 10;
-  loading = false;
-  allLoaded = false;
-  loadingDetails = false;
+  private page = 0;
+  private size = 10;
+  protected loading = false;
+  private allLoaded = false;
+  protected loadingDetails = false;
+  private scrollTimeout: any;
+
 
   constructor(private recordService: RecordService,private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit() {
-    this.recordService.records$.subscribe(data => {
-      this.records = data;
-    });
-
     this.loadRecords();
   }
 
@@ -39,14 +37,26 @@ export class RecordListComponent implements OnInit{
     if (this.loading || this.allLoaded) return;
     this.loading = true;
 
-    this.recordService.getRecords(this.page, this.size).subscribe({
-      next: (data) => {
-        if (data.length === 0) this.allLoaded = true;
-        this.records.push(...data); this.cdr.detectChanges();
+    this.recordService.getRecords(this.page, this.size).pipe(
+      take(1),
+      finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (newRecords: RecordModel[]) => {
+        if (this.page === 0) {
+          this.records = newRecords;
+        } else {
+          this.records.push(...newRecords);
+        }
+
         this.page++;
+        if (newRecords.length < this.size) {
+          this.allLoaded = true;
+        }
       },
-      complete: () => (this.loading = false),
-      error: () => (this.loading = false)
+      error: err => console.error('Records load error:', err)
     });
   }
 
@@ -81,13 +91,16 @@ export class RecordListComponent implements OnInit{
   }
 
   onScroll(event: Event) {
-    const target = event.target as HTMLElement;
+    if (this.scrollTimeout || this.loading || this.allLoaded) return;
 
-    const threshold = 10;
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + threshold;
-
-    if (isAtBottom && !this.loading && !this.allLoaded) {
-      this.loadRecords();
-    }
+    this.scrollTimeout = setTimeout(() => {
+      this.scrollTimeout = null;
+      const target = event.target as HTMLElement;
+      const threshold = 100;
+      const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + threshold;
+      if (isAtBottom) {
+        this.loadRecords();
+      }
+    }, 250);
   }
 }

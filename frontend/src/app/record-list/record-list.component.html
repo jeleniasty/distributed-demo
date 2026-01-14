@@ -1,21 +1,27 @@
 <div class="scroll-container" (scroll)="onScroll($event)">
-  <ul class="record-list">
-    @for (record of records; track record.id) {
-      <li class="record-item" (click)="showDetails(record)">
-        <span class="record-id">#{{ record.id }}</span>
-        <span class="record-desc">{{ record.description }}</span>
-      </li>
-    } @empty {
-      @if (!loading) {
-        <li class="empty-state">No records found</li>
+  @if (records.length > 0) {
+    <ul class="record-list">
+      @for (record of records; track record.id) {
+        <li class="record-item" (click)="showDetails(record)">
+          <span class="record-id">#{{ record.id }}</span>
+          <span class="record-desc">{{ record.description }}</span>
+        </li>
       }
-    }
-  </ul>
-
-  @if(loading) {
+      @if (loading) {
+        <li class="loader-container">
+          <div class="pulse-dot"></div>
+          <span>Loading more...</span>
+        </li>
+      }
+    </ul>
+  } @else if (loading) {
     <div class="loader-container">
       <div class="pulse-dot"></div>
       <span>Loading...</span>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>No records found</p>
     </div>
   }
 </div>

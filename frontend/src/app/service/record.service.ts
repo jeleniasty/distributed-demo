@@ -20,13 +20,7 @@ export class RecordService {
   getRecords(page: number, size: number): Observable<RecordModel[]> {
     return this.http.get<{ content: RecordModel[] }>(
       `${this.API_URL}?page=${page}&size=${size}&sort=id,desc`
-    ).pipe(
-      map((response: any) => response.content),
-      tap(records => {
-        const current = page === 0 ? [] : this.recordsSubject.value;
-        this.recordsSubject.next([...current, ...records]);
-      })
-    );
+    ).pipe(map((response: any) => response.content));
   }
 
   add(record: Partial<RecordModel>) {
