@@ -18,9 +18,7 @@ export class AddRecordComponent {
 
   addRecord() {
     if (this.description.trim()) {
-      this.recordService.add({ description: this.description }).subscribe(() => {
-        this.description = '';
-      });
+      this.recordService.add({ description: this.description }).subscribe(() => {});
     }
   }
 }
